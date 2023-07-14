@@ -5,27 +5,32 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.compassofukraine.ui.BottomBar
 import com.example.compassofukraine.ui.theme.CompassOfUkraineTheme
+import com.example.compassofukraine.util.BottomNavGraph
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             CompassOfUkraineTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                val navHostController = rememberNavController()
+                Scaffold(
+                    bottomBar = {
+                        BottomBar(navHostController = navHostController)
+                    }
                 ) {
-                    Greeting("Android")
+                    Modifier.padding(it)
+                    BottomNavGraph(navHostController = navHostController)
                 }
             }
         }
