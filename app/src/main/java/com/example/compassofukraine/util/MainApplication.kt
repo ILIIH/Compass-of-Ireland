@@ -1,6 +1,7 @@
 package com.example.compassofukraine.util
 
 import android.app.Application
+import com.example.compassofukraine.di.networkModule
 import com.example.compassofukraine.di.viewModelModule
 import com.example.di.dataModule
 import com.example.di.domainModule
@@ -12,7 +13,12 @@ class MainApplication : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@MainApplication)
-            modules(dataModule, domainModule, viewModelModule)
+            modules(
+                dataModule,
+                domainModule,
+                viewModelModule,
+                networkModule
+            )
         }
     }
 }
