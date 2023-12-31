@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Compass of Ukraine</string>
+    <string name="app_name" translatable="false">Compass of Ireland</string>
     <string name="km"> km.</string>
     <string name="excursion_type_walking" translatable="false">🦶</string>
     <string name="excursion_type_bicycle" translatable="false">🚴</string>
