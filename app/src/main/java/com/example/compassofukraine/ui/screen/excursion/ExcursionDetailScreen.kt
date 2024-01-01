@@ -43,6 +43,7 @@ import com.example.compassofukraine.util.ui.DetailedScreenSample
 import com.example.compassofukraine.util.ui.ShowToast
 import com.example.compassofukraine.util.ui.shimmerBrush
 import com.example.compassofukraine.viewModel.excursion.ExcursionDetailViewModel
+import com.example.compassofukraine.viewModel.map.GoogleMapViewModel
 import com.example.model.ExcursionType
 import com.example.model.excursion.DetailedExcursion
 import com.google.android.gms.maps.model.CameraPosition
@@ -52,8 +53,8 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.Polyline
 import com.google.maps.android.compose.rememberCameraPositionState
-import org.koin.androidx.compose.koinViewModel
 import java.net.SocketTimeoutException
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun ExcursionDetailScreen(id: Int) {
@@ -188,43 +189,7 @@ fun ExcursionDetailError(error: Exception) {
     }
 }
 
-@Composable
-fun MapWithDrivingRoute(
-    origin: LatLng,
-    destination: LatLng,
-    waypoints: List<LatLng>
-) {
-    // Fetch route information using Google Maps Directions API and parse the response
-    // val routePoints = fetchRoutePointsFromApi(origin, destination, waypoints)
 
-    val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(origin, 10f)
-    }
-
-    GoogleMap(
-        modifier = Modifier.fillMaxSize().height(300.dp),
-        cameraPositionState = cameraPositionState
-    ) {
-        // Add markers for start and end points
-        Marker(
-            state = MarkerState(position = origin),
-            title = "Start",
-            snippet = "Starting point"
-        )
-        Marker(
-            state = MarkerState(position = destination),
-            title = "End",
-            snippet = "Destination"
-        )
-
-        // Draw polyline for driving route with waypoints
-        // Polyline(
-        //     points = routePoints,
-        //     color = Color.Blue,
-        //      width = 5f
-        //   )
-    }
-}
 
 @Composable
 fun MapWithRoute(points: List<LatLng>) {
@@ -233,7 +198,9 @@ fun MapWithRoute(points: List<LatLng>) {
     }
 
     GoogleMap(
-        modifier = Modifier.fillMaxSize().height(300.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .height(300.dp),
         cameraPositionState = cameraPositionState
     ) {
         // Add a marker for the starting point (Singapore)

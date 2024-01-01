@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.compassofukraine.util.ResultOf
 import com.example.model.excursion.DetailedExcursion
+import com.example.useCase.GetDirectionUseCase
 import com.example.useCase.excursion.AddExcursionToFavouriteUseCase
 import com.example.useCase.excursion.GetDetailsExcursionUseCase
 import com.example.useCase.excursion.IsExcursionInFavoriteUseCase
@@ -19,7 +20,7 @@ class ExcursionDetailViewModel(
     private val getDetailsExcursionUseCase: GetDetailsExcursionUseCase,
     private val addExcursionToFavoriteUseCase: AddExcursionToFavouriteUseCase,
     private val removeExcursionFromFavoriteUseCase: RemoveExcursionFromFavouriteUseCase,
-    private val isExcursionInFavoriteUseCase: IsExcursionInFavoriteUseCase
+    private val isExcursionInFavoriteUseCase: IsExcursionInFavoriteUseCase,
 ) : ViewModel() {
 
     private val _excursion: MutableState<ResultOf<DetailedExcursion>> = mutableStateOf(ResultOf.Loading)
