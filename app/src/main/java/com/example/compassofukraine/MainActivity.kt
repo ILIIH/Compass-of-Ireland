@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.example.compassofukraine.framework.remote.MapsDirectionService
 import com.example.compassofukraine.ui.BottomBar
 import com.example.compassofukraine.ui.theme.CompassOfUkraineTheme
 import com.example.compassofukraine.util.navigation.BottomNavGraph
+import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

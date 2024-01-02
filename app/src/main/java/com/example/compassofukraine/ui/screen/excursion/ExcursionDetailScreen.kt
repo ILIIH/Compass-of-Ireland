@@ -2,7 +2,6 @@ package com.example.compassofukraine.ui.screen.excursion
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,13 +45,18 @@ import com.example.compassofukraine.util.ui.DetailedScreenSample
 import com.example.compassofukraine.util.ui.ShowToast
 import com.example.compassofukraine.util.ui.shimmerBrush
 import com.example.compassofukraine.viewModel.excursion.ExcursionDetailViewModel
+import com.example.compassofukraine.viewModel.map.GoogleMapViewModel
 import com.example.model.ExcursionType
 import com.example.model.excursion.DetailedExcursion
-import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
-import org.koin.androidx.compose.koinViewModel
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.Marker
+import com.google.maps.android.compose.MarkerState
+import com.google.maps.android.compose.Polyline
+import com.google.maps.android.compose.rememberCameraPositionState
 import java.net.SocketTimeoutException
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 internal fun ExcursionDetailScreen(id: Int) {
@@ -133,6 +137,27 @@ fun ExcursionDetailLoaded(excursion: DetailedExcursion) {
     ) {
         androidx.compose.material3.Text(text = stringResource(id = R.string.start_excursion))
     }
+    androidx.compose.material3.Text(
+        text = excursion.description,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
+    )
+    when (excursion.type) {
+        ExcursionType.BICYCLE -> MapWithRoute(excursion.bicycleCoordinates.toLatLng())
+        ExcursionType.WALKING -> MapWithRoute(excursion.walkingCoordinates.toLatLng())
+        ExcursionType.CAR -> MapWithRoute(excursion.carCoordinates.toLatLng())
+        ExcursionType.COMBINE -> ExcursionTypeBar(excursion)
+    }
+    Button(
+        modifier = Modifier
+            .padding(top = 20.dp, bottom = 10.dp)
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        onClick = {
+        }
+    ) {
+        androidx.compose.material3.Text(text = stringResource(id = R.string.start_excursion))
+    }
 }
 
 @Composable
@@ -187,23 +212,32 @@ fun ExcursionDetailError(error: Exception) {
     }
 }
 
+
+
 @Composable
 fun MapWithRoute(points: List<LatLng>) {
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            val map = MapView(context).apply {
-                onCreate(null)
-            }
-            map
-        }
-    ) { mapView ->
-        mapView.getMapAsync { googleMap ->
-            val polylineOptions = PolylineOptions()
-                .addAll(points)
-                .color(android.graphics.Color.BLUE)
-            googleMap.addPolyline(polylineOptions)
-        }
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(points.first(), 10f)
+    }
+
+    GoogleMap(
+        modifier = Modifier
+            .fillMaxSize()
+            .height(300.dp),
+        cameraPositionState = cameraPositionState
+    ) {
+        // Add a marker for the starting point (Singapore)
+        Marker(
+            state = MarkerState(position = points.first()),
+            title = "Start pint"
+        )
+
+        // Draw a polyline for the route
+        Polyline(
+            points = points,
+            color = Color.Blue,
+            width = 5f
+        )
     }
 }
 
@@ -239,38 +273,17 @@ private fun ExcursionTypeBar(excursion: DetailedExcursion) {
         // TODO("Teporary decicion, until we will receive map API key")
 
         when (expandedButtonIndex.value) {
-            0 -> Image(
-                painter = painterResource(id = R.drawable.mocked_car_map),
-                contentDescription = "Card mocked map",
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 10.dp)
-                    .height(350.dp)
-                    .width(350.dp)
-            )
+
+            0 -> {
+                MapWithRoute(excursion.carCoordinates.toLatLng())
+            }
 
             1 -> {
-                Image(
-                    painter = painterResource(id = R.drawable.mocked_walking_map),
-                    contentDescription = "Bicycle mocked map",
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 10.dp)
-                        .height(350.dp)
-                        .width(350.dp)
-                )
+                MapWithRoute(excursion.bicycleCoordinates.toLatLng())
             }
 
             2 -> {
-                Image(
-                    painter = painterResource(id = R.drawable.mocked_car_map),
-                    contentDescription = "Walking mocked map",
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .padding(top = 10.dp)
-                        .height(350.dp)
-                        .width(350.dp)
-                )
+                MapWithRoute(excursion.walkingCoordinates.toLatLng())
             }
         }
     }
