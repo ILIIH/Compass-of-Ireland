@@ -28,11 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.compassofukraine.R
 import com.example.compassofukraine.ui.theme.ButtonSelectedColor
 import com.example.compassofukraine.ui.theme.ButtonUnselectedColor
@@ -113,6 +115,27 @@ fun ExcursionDetailLoaded(excursion: DetailedExcursion) {
                 style = MaterialTheme.typography.bodyLarge
             )
         }
+    }
+    androidx.compose.material3.Text(
+        text = excursion.description,
+        style = MaterialTheme.typography.bodyMedium,
+        modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
+    )
+    when (excursion.type) {
+        ExcursionType.BICYCLE -> MapWithRoute(excursion.bicycleCoordinates.toLatLng())
+        ExcursionType.WALKING -> MapWithRoute(excursion.walkingCoordinates.toLatLng())
+        ExcursionType.CAR -> MapWithRoute(excursion.carCoordinates.toLatLng())
+        ExcursionType.COMBINE -> ExcursionTypeBar(excursion)
+    }
+    Button(
+        modifier = Modifier
+            .padding(top = 20.dp, bottom = 10.dp)
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth(),
+        onClick = {
+        }
+    ) {
+        androidx.compose.material3.Text(text = stringResource(id = R.string.start_excursion))
     }
     androidx.compose.material3.Text(
         text = excursion.description,
@@ -250,6 +273,7 @@ private fun ExcursionTypeBar(excursion: DetailedExcursion) {
         // TODO("Teporary decicion, until we will receive map API key")
 
         when (expandedButtonIndex.value) {
+
             0 -> {
                 MapWithRoute(excursion.carCoordinates.toLatLng())
             }
